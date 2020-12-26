@@ -23,7 +23,7 @@ def impact_point(p1, p2, r):
     return Point(p1.x + dx * dst, p1.y + dy * dst)
 
 
-def reflected_point(pr, p1, p2):
+def reflected_point(p1, p2, pr):
     '''
     Return the reflection of pr across the line from p1 to p2.
     '''
@@ -43,7 +43,7 @@ def reflected_point(pr, p1, p2):
     # See
     # http://www.ahinson.com/algorithms_general/Sections/Geometry/ParametricLineIntersection.pdf
     # for more derivation.
-    u = (-dx * (pr.y - p1.y) + dy * (pr.x - p1.x)) / (dy*dy + dx*dx + EPS)
+    u = (-dx * (pr.y - p1.y) + dy * (pr.x - p1.x)) / (dx*dx + dy*dy + EPS)
 
     return Point(pr.x - dy*2*u, pr.y + dx*2*u)
 
@@ -79,20 +79,13 @@ def main():
     p02 = impact_point(p2, lh, r)
     p13 = impact_point(p3, rh, r)
     p01 = impact_point(p1, p13, r)
-    p0s = reflected_point(p02, p01, p13)
+    p0s = reflected_point(p01, p13, p02)
 
     theta = math.atan2(p01.y - p0s.y, p01.x - p0s.x)
     d = (h - p0s.y) / (p01.y - p0s.y + EPS) * (p01.x - p0s.x) + p0s.x
     p0 = Point(d, h)
 
-    #print(p02, file=sys.stderr)
-    #print(p13, file=sys.stderr)
-    #print(p01, file=sys.stderr)
-    #print(p0, file=sys.stderr)
-    ok = (p02.y < p2.y
-          and p13.y < p3.y
-          and p01.y < p1.y
-          and on_table(p0, w, l, r)
+    ok = (on_table(p0, w, l, r)
           and on_table(p02, w, l, r)
           and on_table(p13, w, l, r)
           and on_table(p01, w, l, r)
