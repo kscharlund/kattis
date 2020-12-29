@@ -4,6 +4,15 @@ Point = namedtuple('Point', ['x', 'y'])
 
 
 def area_sign(p1, p2, p3):
+    """
+    Return the sign of the area of the triangle p1-p2-p3.
+    Can be used to tell which half plane p3 is on with respect to the line
+    p1-p2, although here we are only interested in the case where p3 is on
+    the line.
+
+    See also:
+    https://www8.cs.umu.se/kurser/TDBAfl/VT06/algorithms/BOOK/BOOK4/NODE184.HTM
+    """
     area_2 = (p2.x - p1.x) * (p3.y - p1.y) - (p3.x - p1.x) * (p2.y - p1.y)
     # print(p1, p2, p3, area_2, file=sys.stderr)
     if area_2 > 0.5:
@@ -19,6 +28,9 @@ def collinear(p1, p2, p3):
 
 
 def between(p1, p2, p3):
+    """
+    True if p3 lies between p1 and p2, assuming that the points are collinear.
+    """
     if p1.x != p2.x:
         return p1.x <= p3.x <= p2.x or p2.x <= p3.x <= p1.x
     else:
@@ -26,6 +38,9 @@ def between(p1, p2, p3):
 
 
 def parallel(p1, p2, p3, p4):
+    """
+    Handle the many special cases stemming from parallel line segments.
+    """
     if p1 == p2:
         if p3 == p4:
             if p1 == p3:
