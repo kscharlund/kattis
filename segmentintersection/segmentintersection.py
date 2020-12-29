@@ -63,6 +63,18 @@ def parallel(p1, p2, p3, p4):
 
 
 def intersection(p1, p2, p3, p4):
+    """
+    Calculate intersection between the line segments p1-p2 and p3-p4.
+
+    If they intersect in a line (i e they are collinear and overlap), return
+    a tuple of start and end points for the intersection.
+
+    If there is no intersection, return None.
+
+    See e g https://en.wikipedia.org/wiki/Line–line_intersection for
+    derivations of these expressions.
+    Also, O'Rourke (1997): Computational Geometry in C, 2 ed.
+    """
     denom = (
         p1.x * (p4.y - p3.y) +
         p2.x * (p3.y - p4.y) +
@@ -106,6 +118,8 @@ def main():
         else:
             p1, p2 = res
             if abs(p1.x - p2.x) < 1e-4 and abs(p1.y - p2.y) < 1e-4:
+                # Note: could use p1 == p2 here as long as all input coordinates
+                # are integers (which they are in this problem).
                 print(f'{p1.x:.2f} {p1.y:.2f}')
             else:
                 if p1.x < p2.x:
