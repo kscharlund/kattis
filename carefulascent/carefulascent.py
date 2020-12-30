@@ -10,7 +10,7 @@ shields.sort()
 y = 0
 ratio = 0
 while shields:
-    l, u, f = shields.pop()
+    l, u, f = shields.pop(0)
     ratio += l - y
     ratio += (u - l) * f
     y = u
