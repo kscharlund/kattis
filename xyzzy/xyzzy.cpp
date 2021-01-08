@@ -28,6 +28,10 @@ int main()
             weights[i] = -w;
         }
 
+        // Use a lightly modified Bellman-Ford shortest path algorithm.
+        // The modifications are:
+        // - Checking for valid distance (< 0, here) in relaxation step.
+        // - Propagating -inf distance to all nodes after negative cycle.
         const int inf_distance = 1000000;
         vi distance(n, inf_distance);
         distance[0] = -100;
@@ -43,7 +47,9 @@ int main()
                         if (dist < distance[v] && dist < 0)
                         {
                             // dist < 0 check ensures we only propagate valid
-                            // paths.
+                            // paths. That means we won't have to check path
+                            // afterwards, if the distance is negative at the
+                            // sink we know it's valid.
                             distance[v] = dist;
                         }
                     }
