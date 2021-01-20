@@ -1,10 +1,5 @@
 import sys
 import math
-from collections import namedtuple
-from bisect import bisect_left
-from pprint import pprint
-
-#Point = namedtuple('Point', ['x', 'y'])
 
 class Point:
     def __init__(self, x, y):
@@ -26,7 +21,7 @@ class Point:
                 self.x * p.x - self.y * p.y,
                 self.x * p.y + self.y * p.x
             )
-        return self.scale(p)
+        return Point(self.x * p, self.y * p)
 
     def __rmul__(self, p):
         return self.__mul__(p)
@@ -38,13 +33,10 @@ class Point:
                 (self.x * p.x + self.y * p.y) / den,
                 (self.y * p.x - self.x * p.y) / den
             )
-        return self.scale(1 / p)
+        return Point(self.x / p, self.y / p)
 
     def abs(self):
         return math.hypot(self.x, self.y)
-
-    def scale(self, a):
-        return Point(self.x * a, self.y * a)
 
     def dot(self, p):
         return self.x * p.x + self.y * p.y
@@ -53,6 +45,8 @@ class Point:
         return self.x * p.y - self.y * p.x
 
 def transform(p, q, r, fp, fq):
+    # Given p, q, f(p) and f(q) where f is a linear transformation,
+    # return f(r)
     pr = r - p
     pq = q - p
     fpq = fq - fp
