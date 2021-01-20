@@ -67,24 +67,27 @@ for _ in range(n_cases):
     depth = int(sys.stdin.readline().strip())
     fraction = float(sys.stdin.readline().strip())
 
-    lengths = [(p2 - p1).abs() for p1, p2 in zip(points[:-1], points[1:])]
+    vecs = [p2 - p1 for p1, p2 in zip(points[:-1], points[1:])]
+    lengths = [v.abs() for v in vecs]
     total_length = sum(lengths)
 
     dist_left = fraction * total_length
     res = points[0]
-    p0, q0 = points[0], points[-1]
-    p, q = p0, q0
+    base = points[-1] - points[0]
+    transformer = Point(1, 0)
     scale = 1
     for level in range(1, depth + 1):
         for i in range(len(lengths)):
             if dist_left < scale * lengths[i]:
                 break
             dist_left -= scale * lengths[i]
-            res += transform(p0, q0, points[i+1], p, q) - transform(p0, q0, points[i], p, q)
+            res += vecs[i] * transformer
 
-        p, q = transform(p0, q0, points[i], p, q), transform(p0, q0, points[i+1], p, q)
         if level == depth:
-            res += (dist_left / (scale * lengths[i])) * (q - p)
-        scale = scale * lengths[i] / total_length
+            final_fraction = dist_left / (scale * lengths[i])
+            res += final_fraction * vecs[i] * transformer
+
+        transformer *= vecs[i] / base
+        scale *= lengths[i] / total_length
 
     print(res.x, res.y)
