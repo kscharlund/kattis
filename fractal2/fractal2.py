@@ -61,27 +61,28 @@ for _ in range(n_cases):
     depth = int(sys.stdin.readline().strip())
     fraction = float(sys.stdin.readline().strip())
 
-    vecs = [p2 - p1 for p1, p2 in zip(points[:-1], points[1:])]
-    lengths = [v.abs() for v in vecs]
+    vectors = [p2 - p1 for p1, p2 in zip(points[:-1], points[1:])]
+    lengths = [v.abs() for v in vectors]
     total_length = sum(lengths)
+    total_vector = points[-1] - points[0]
 
-    dist_left = fraction * total_length
-    res = points[0]
-    base = points[-1] - points[0]
-    transformer = Point(1, 0)
+    d = fraction * total_length
+    r = points[0]
+    trans = Point(1, 0)
     scale = 1
     for level in range(1, depth + 1):
-        for i in range(len(lengths)):
-            if dist_left < scale * lengths[i]:
+        for i in range(n_points - 1):
+            if d < scale * lengths[i] + 1e-10:
                 break
-            dist_left -= scale * lengths[i]
-            res += vecs[i] * transformer
+            d -= scale * lengths[i]
+            r += trans * vectors[i]
+        else:
+            raise ValueError('Fraction > 1?')
 
         if level == depth:
-            final_fraction = dist_left / (scale * lengths[i])
-            res += final_fraction * vecs[i] * transformer
+            r += d * (trans * vectors[i]) / (scale * lengths[i])
 
-        transformer *= vecs[i] / base
+        trans *= vectors[i] / total_vector
         scale *= lengths[i] / total_length
 
-    print(res.x, res.y)
+    print(r.x, r.y)
