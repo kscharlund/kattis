@@ -32,6 +32,11 @@ if not c % 2:
     edges.add((m, m2))
     visited.add(m2)
     queue.append(m2)
+elif not r % 2:
+    m2 = (r // 2, (c - 1) // 2)
+    edges.add((m, m2))
+    visited.add(m2)
+    queue.append(m2)
 
 while queue:
     u = queue.pop(0)
