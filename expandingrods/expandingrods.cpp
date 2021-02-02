@@ -11,6 +11,8 @@ typedef vector<double> vd;
 typedef vector<vi> vvi;
 
 static const int N_LUT_STEPS = 10000;
+static const double I_TO_ALPHA_2 = M_PI / (2.0 * N_LUT_STEPS);
+static const double EPS = 1e-8;
 
 /*
  * Generate lookup table of x/s for different values of alpha.
@@ -27,7 +29,7 @@ vd generate_x_s_lut()
     vd res;
     res.reserve(N_LUT_STEPS);
     for (int i = 1; i <= N_LUT_STEPS; ++i) {
-        double alpha_2 = i * M_PI / (2 * N_LUT_STEPS);
+        double alpha_2 = i * I_TO_ALPHA_2;
         res.push_back(sin(alpha_2) / alpha_2);
     }
     return res;
@@ -47,7 +49,7 @@ double refine_alpha_2(double x_s, double guess)
         double fp = cos(guess) - x_s;
         res = guess - f / fp;
         // cerr << "it " << (++it) << ": " << guess << " -> " << res << endl;
-        if (fabs(guess - res) < 1e-8)
+        if (fabs(guess - res) < EPS)
             break;
         guess = res;
     }
@@ -59,6 +61,8 @@ int main()
     cin.sync_with_stdio(false);
     cin.tie(NULL);
 
+    vd lut = generate_x_s_lut();
+
     while (true) {
         double x, n, C;
         cin >> x >> n >> C;
@@ -67,14 +71,13 @@ int main()
 
         double s = x * (1.0 + n * C);
         double x_s = x / s;
-        if (fabs(x_s - 1.0) < 1e-7) {
+        if (fabs(x_s - 1.0) < EPS) {
             cout << fixed << setprecision(9) << 0.0 << "\n";
             continue;
         }
 
-        vd lut = generate_x_s_lut();
         auto pos = lower_bound(lut.begin(), lut.end(), x_s, greater<double>());
-        double alpha_2 = distance(lut.begin(), pos) * M_PI / (2 * N_LUT_STEPS);
+        double alpha_2 = distance(lut.begin(), pos) * I_TO_ALPHA_2;
         alpha_2 = refine_alpha_2(x_s, alpha_2);
         double r = s / (2.0 * alpha_2);
         double h = r * (1 - cos(alpha_2));
